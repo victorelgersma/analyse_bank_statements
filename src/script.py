@@ -9,12 +9,15 @@ RED = "\033[31m"
 BLUE = "\033[34m"
 RESET = "\033[0m"
 
+EUR_TO_GBP = 0.8
+USD_TO_GBP = 0.6
+
 # Relevant columns
 
 san_paths=['../data/san/current/oct.html', '../data/san/saver/oct.html' ]
 rev_paths = ['../data/rev/eur/oct.csv', '../data/rev/gbp/oct.csv', '../data/rev/usd/oct.csv']
 
-def print_header(account_name, color):
+def title(account_name, color):
     print("\n" + "-" * 56)
     print(f"{color} {account_name.upper()}  - TRANSACTIONS {RESET}")
     print("\n" + "-" * 56 +"\n")
@@ -67,13 +70,13 @@ def analyze_san(path):
     print("total money in", df["Money in"].sum())
     print("sum", - df["Money Out"].sum() + df["Money in"].sum())
 
-print_header("Revolut", BLUE)
+title("Revolut", BLUE)
 
 for path in rev_paths:
     print('\n')
     analyze_rev(path)
 
-print_header("Santander", RED)
+title("Santander", RED)
 
 for statement in san_paths:
     print('\n')
