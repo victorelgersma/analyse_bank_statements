@@ -1,0 +1,10 @@
+
+## To do
+
+- [ ] start santander data frames later - make sure NaNs after the heading are taken care of
+- [ ] add linter
+- [ ] add formatter
+- [ ] turn the santander parser into a package
+- [ ] add vanguard statement
+- [ ] figure out how to set a schema to validate the santander and revolut bank statements
+

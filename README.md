@@ -32,7 +32,3 @@ oct.html: HTML document, ISO-8859 text, with very long lines (1540)
 ```
 
 it is good to specify the charset
-## To do
-
-- [ ] add linter
-- [ ] add formatter

@@ -33,11 +33,11 @@ rev_usd_df = parse_rev('../data/rev/usd/oct.csv')
 rev_columns=["Amount", "Description", "Completed Date"]
 
 
-print("\nEuro:\n")
+print("\nEuro Account\n")
 print(rev_euro_df[rev_columns]) 
-print("\nGBP:\n")
+print("\nGBP Account\n")
 print(rev_gbp_df[rev_columns]) 
-print("\nUSD:\n")
+print("\nUSD Account\n")
 print(rev_usd_df[rev_columns]) 
 
 print("\n--------------------------------------------------------\n")
@@ -55,9 +55,9 @@ san_savings = parse_san('../data/san/saver/oct.html')
 
 san_columns=["Debit/Credit", "Date"]
 
-print("\nTransactions - Current Account\n")
+print("\nCurrent Account\n")
 print(san_current)
 
-print("\nTransactions - Savings Account\n")
+print("\nSavings Account\n")
 print(san_savings)
 
