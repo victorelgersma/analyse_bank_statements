@@ -40,10 +40,12 @@ print("\n--------------------------------------------------------\n")
 print(f"{RED} santander {RESET}")
 print("\n--------------------------------------------------------\n")
 
+def parse_san(path):
+    return pd.read_html(Path(path), header =3)[0]
 # santander current account
-san_current = pd.read_html(Path('../data/san/current/oct.html'), header = 3)[0] 
+san_current = parse_san('../data/san/current/oct.html')
 # santander savings account
-san_savings = pd.read_html(Path('../data/san/saver/oct.html'))[0] 
+san_savings = parse_san('../data/san/saver/oct.html')
 
 san_columns=["Debit/Credit", "Date"]
 
