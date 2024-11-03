@@ -3,45 +3,30 @@ from pathlib import Path
 import pandas as pd
 
 MONTH = 'oct'
-BALANCE = 0
 
 # ANSI escape codes for colors
 RED = "\033[31m"
 BLUE = "\033[34m"
 RESET = "\033[0m"
 
+# Relevant columns
 
-print("\n--------------------------------------------------------\n")
-print(f"{BLUE} REVOLUT  - TRANSACTIONS {RESET}")
-print("\n--------------------------------------------------------\n")
+san_paths=['../data/san/current/oct.html', '../data/san/saver/oct.html' ]
+rev_paths = ['../data/rev/eur/oct.csv', '../data/rev/gbp/oct.csv', '../data/rev/usd/oct.csv']
 
-def parse_rev(path):
-    return pd.read_csv(path)
+def print_header(account_name, color):
+    print("\n" + "-" * 56)
+    print(f"{color} {account_name.upper()}  - TRANSACTIONS {RESET}")
+    print("\n" + "-" * 56 +"\n")
 
-paths = ['../data/rev/eur/oct.csv', '../data/rev/gbp/oct.csv', '../data/rev/usd/oct.csv']
-# euro account
 
-rev_columns=["Amount", "Description", "Completed Date", "Currency"]
-
-def analyze(path, columns):
-    df = parse_rev(path)
+def analyze_rev(path):
+    REV_COLUMNS=["Amount", "Description", "Completed Date", "Currency"]
+    df = pd.read_csv(path)
     print(df.dtypes)
-    print(df[rev_columns])
+    print(df[REV_COLUMNS])
     print("sum", df["Amount"].sum())
 
-for path in paths:
-    analyze(path, rev_columns)
-
-# columns
-
-
-print("\n--------------------------------------------------------\n")
-print(f"{RED} SANTANDER - TRANSACTIONS {RESET}")
-print("\n--------------------------------------------------------\n")
-
-# detect encoding
-
-san_current_file_path='../data/san/current/oct.html' 
 
 def get_encoding(path):
     with open(path, 'rb') as f:
@@ -50,38 +35,51 @@ def get_encoding(path):
         print(f"Detected encoding: {encoding}")
     return encoding
 
-
-def parse_san(path):
-    # TODO - add doctest with dummy data
-    encoding = get_encoding(path)
-    encoding = get_encoding(path)
-    df = pd.read_html(Path(path), encoding=encoding, header =3)[0]
-    cols = ["Date", "Description", "Money in", "Money Out"]
-    # turn into booleans
+def clean_currency_columns(df):
+    # numbers should be floats
     df['Money in'] = df['Money in'].str.replace('£', '').str.replace(',', '').astype(float)
     df['Money Out'] = df['Money Out'].str.replace('£', '').str.replace(',', '').astype(float)
     # Replace NaNs with 0
     df['Money in'] = df['Money in'].fillna(0)
     df['Money Out'] = df['Money Out'].fillna(0)
-    return df[cols]
+    return df
 
-# santander current account
-san_current = parse_san('../data/san/current/oct.html')
-# santander savings account
-san_savings = parse_san('../data/san/saver/oct.html')
+def get_df_san(path):
+    SAN_COLUMNS=["Date", "Description", "Money Out", "Money in"]
+    """return a df with the header containing the right titles"""
+    encoding = get_encoding(path)
+    df = pd.read_html(Path(path), encoding=encoding, header =3)[0]
+    return df[SAN_COLUMNS]
 
-san_columns=["Debit/Credit", "Date"]
+def clean_san_df(df):
+    df = clean_currency_columns(df)
+    df["Amount"] = - df["Money Out"] + df["Money in"]
+    return df
 
-print("\nCurrent Account\n")
-print(san_current.dtypes)
-print(san_current)
+def analyze_san(path):
+    SAN_COLUMNS=["Date", "Description", "Amount"]
+    # clean
+    df = get_df_san(path)
+    df = clean_san_df(df)
+    print(df.dtypes)
+    print(df[SAN_COLUMNS])
+    print("total money out", df["Money Out"].sum())
+    print("total money in", df["Money in"].sum())
+    print("sum", - df["Money Out"].sum() + df["Money in"].sum())
 
-print("total money out", san_current["Money Out"].sum())
-print("total money in", san_current["Money in"].sum())
-print("sum", - san_current["Money Out"].sum() + san_current["Money in"].sum())
-print("\nSavings Account\n")
-print(san_savings)
-print("sum", - san_savings["Money Out"].sum() + san_savings["Money in"].sum())
+print_header("Revolut", BLUE)
+
+for path in rev_paths:
+    print('\n')
+    analyze_rev(path)
+
+print_header("Santander", RED)
+
+for statement in san_paths:
+    print('\n')
+    analyze_san(statement)
+
+
 
 
 
