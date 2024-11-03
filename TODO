@@ -1,6 +1,7 @@
 
 ## To do
 
+- [ ] calculate sums
 - [ ] start santander data frames later - make sure NaNs after the heading are taken care of
 - [ ] add linter
 - [ ] add formatter
@@ -9,5 +10,4 @@
 - [ ] figure out how to set a schema to validate the santander and revolut bank statements
 - [ ] convert currency to a number
 - [ ] convert NaNs to 0s - or slice it out
-
 
