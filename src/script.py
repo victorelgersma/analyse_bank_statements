@@ -5,17 +5,26 @@ import pandas as pd
 
 date = datetime(2024, 10, 1)
 month_abbr =date.strftime('%b').lower() # 'oct'
-print(month_abbr)
 
+pd.set_option('display.max_rows', None)
 EUR_TO_GBP = 0.84
 USD_TO_GBP = 0.77
+
 COLUMNS=["Amount", "Description", "Date", "Currency"]
+
 san_paths = [f'../data/san/current/{month_abbr}.html', f'../data/san/saver/{month_abbr}.html']
 rev_paths = [f'../data/rev/eur/{month_abbr}.csv', f'../data/rev/gbp/{month_abbr}.csv', f'../data/rev/usd/{month_abbr}.csv']
 
 
+# Printing functions
 def hor_rule():
     print("-" * 56)
+
+def display_profit(profit, currency):
+    hor_rule()
+    print(f"\tprofit: \t\t\t  {profit}  {currency}")
+    print("\n")
+    print("\n")
 
 def get_currency(df):
     """Detects the currency of transactions in a DataFrame based on the 'Currency' column.
@@ -35,11 +44,6 @@ def get_currency(df):
     # Return mixed if multiple currencies are present
     return "Mixed Currencies"
 
-def display_profit(profit, currency):
-    hor_rule()
-    print(f"\tprofit: \t\t\t  {profit}  {currency}")
-    print("\n")
-    print("\n")
 
 
 def get_encoding(path):
@@ -132,10 +136,12 @@ def add_gbp_column(df):
     # Apply conversion function to create 'Profit (GBP)' column
     df['Profit (GBP)'] = df.apply(convert_to_gbp, axis=1)
     return df
+
 df = add_gbp_column(df)
 print(df)
 
 total_profit = round(df["Profit (GBP)"].sum(), 2)
 print("\n TOTAL PROFIT: \n")
 print(f"{total_profit} GBP")
+
 
