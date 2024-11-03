@@ -1,6 +1,7 @@
 
 ## To do
 
+- [ ] make the column names identical (in the cleanup functions)
 - [  ] have npm get balance month-number give me the balance for that month
 - [ ] calculate sums
 - [ ] start santander data frames later - make sure NaNs after the heading are taken care of
