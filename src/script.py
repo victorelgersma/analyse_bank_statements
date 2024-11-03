@@ -11,7 +11,7 @@ MONTH = 'oct'
 EUR_TO_GBP = 0.8
 USD_TO_GBP = 0.6
 
-account_summary_list = []
+COLUMNS=["Amount", "Description", "Date", "Currency"]
 
 san_paths=['../data/san/current/oct.html', '../data/san/saver/oct.html' ]
 rev_paths = ['../data/rev/eur/oct.csv', '../data/rev/gbp/oct.csv', '../data/rev/usd/oct.csv']
@@ -19,7 +19,7 @@ rev_paths = ['../data/rev/eur/oct.csv', '../data/rev/gbp/oct.csv', '../data/rev/
 def hor_rule():
     print("-" * 56)
 
-def detect_currency(df):
+def get_currency(df):
     """Detects the currency of transactions in a DataFrame based on the 'Currency' column.
        If no currencies are present, it returns 'GBP'.
        If multiple currencies are present, it returns 'Mixed Currencies'."""
@@ -37,14 +37,9 @@ def detect_currency(df):
     # Return mixed if multiple currencies are present
     return "Mixed Currencies"
 
-def title(account_name, color):
-    hor_rule()
-    print(f"{color} {account_name.upper()}  - TRANSACTIONS {RESET}")
-    hor_rule()
-
 def display_profit(profit, currency):
     hor_rule()
-    print(f"profit: \t\t\t  {profit}  {currency}")
+    print(f"\tprofit: \t\t\t  {profit}  {currency}")
     print("\n")
     print("\n")
 
@@ -75,39 +70,41 @@ def get_df_san(path):
 def clean_san(df):
     df = clean_currency_columns(df)
     df["Amount"] = - df["Money Out"] + df["Money in"]
+    df["Currency"] = "GBP"
     return df
 
-SAN_COLUMNS=["Date", "Description", "Amount"]
+def get_profit(df):
+    return round(df["Amount"].sum(),2)
 
-def display_transactions(df, cols):
-    print(df[cols])
-    profit = round(df["Amount"].sum(),2)
-    display_profit(str(profit), "GBP")
 
+def clean_rev(df):
+    df["Date"] = df["Completed Date"]
+    return df
+
+
+def process(df, name):
+    " Once the data frame is in the right format, this is the handler function"
+    profit = get_profit(df)
+    currency = get_currency(df)
+    account_summary_list.append([name, profit, currency])
+    print(name)
+    print(df[COLUMNS])
+    display_profit(str(profit), currency)
+
+account_summary_list = []
 for index, path in enumerate(rev_paths):
-    REV_COLUMNS=["Amount", "Description", "Completed Date", "Currency"]
     df = pd.read_csv(path)
-    print(f"Revolut Statement {index+1}\n")
-    display_transactions(df, REV_COLUMNS)
+    df = clean_rev(df)
+    name = f"Revolut Statement {index +1}\n"
+    process(df, name)
+
 
 print("Santander")
 
-for path in san_paths:
-    df = get_df_san(path)
-    df = clean_san(df)
+for index, path in enumerate(san_paths):
+    df = clean_san(get_df_san(path))
     print('\n')
-    display_transactions(df, SAN_COLUMNS)
+    name = f"Santander Statement {index +1}\n"
+    process(df, name)
 
-import pandas as pd
-
-# Create a DataFrame for a single transaction to Vanguard
-vanguard_transaction = pd.DataFrame({
-    'Description': ['Added to Vanguard account'],
-    'Amount': [250],
-    'Currency': ['GBP'],  # Specify GBP since it's in GBP
-    'Account': ['Vanguard']
-})
-
-display_transactions(vanguard_transaction, ["Description", "Amount", "Currency", "Account"])
-
-
+print(account_summary_list)
