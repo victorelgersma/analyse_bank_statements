@@ -1,12 +1,16 @@
 """
 Note: this does not take into account the money moved into my vanguard account
 """
+from datetime import datetime
 
 import chardet
 from pathlib import Path
 import pandas as pd
 
-MONTH = 'oct'
+
+date = datetime(2024, 10, 1)
+month_abbr =date.strftime('%b').lower() # 'oct'
+print(month_abbr)
 
 EUR_TO_GBP = 0.8
 USD_TO_GBP = 0.6
@@ -88,14 +92,16 @@ def process(df, name):
     currency = get_currency(df)
     account_summary_list.append([name, profit, currency])
     print(name)
+    hor_rule()
     print(df[COLUMNS])
     display_profit(str(profit), currency)
 
 account_summary_list = []
+print('\n')
 for index, path in enumerate(rev_paths):
     df = pd.read_csv(path)
     df = clean_rev(df)
-    name = f"Revolut Statement {index +1}\n"
+    name = f"Revolut Statement {index +1}"
     process(df, name)
 
 
@@ -104,7 +110,38 @@ print("Santander")
 for index, path in enumerate(san_paths):
     df = clean_san(get_df_san(path))
     print('\n')
-    name = f"Santander Statement {index +1}\n"
+    name = f"Santander Statement {index +1}"
     process(df, name)
 
-print(account_summary_list)
+account_summary_list.append(["Vanguard", 250, "GBP"])
+
+df = pd.DataFrame(account_summary_list, columns=["Account", "Profit", "Currency"])
+
+def add_gbp_column(df):
+    """
+    Add a 'Profit (GBP)' column to the DataFrame by converting the 'Profit' column based on 'Currency'.
+
+    Parameters:
+    df (pd.DataFrame): DataFrame with 'Profit' and 'Currency' columns.
+
+    Returns:
+    pd.DataFrame: DataFrame with a new 'Profit (GBP)' column.
+    """
+    # Define a conversion function for each row
+    def convert_to_gbp(row):
+        if row['Currency'] == 'EUR':
+            return row['Profit'] * EUR_TO_GBP
+        elif row['Currency'] == 'USD':
+            return row['Profit'] * USD_TO_GBP
+        return row['Profit']  # GBP remains the same
+    
+    # Apply conversion function to create 'Profit (GBP)' column
+    df['Profit (GBP)'] = df.apply(convert_to_gbp, axis=1)
+    return df
+df = add_gbp_column(df)
+print(df)
+
+total_profit = round(df["Profit (GBP)"].sum(), 2)
+print("\n TOTAL PROFIT: \n")
+print(f"{total_profit} GBP")
+
