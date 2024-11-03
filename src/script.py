@@ -40,12 +40,10 @@ print("\n--------------------------------------------------------\n")
 print(f"{RED} santander {RESET}")
 print("\n--------------------------------------------------------\n")
 
-SKIPROWS=3
-
 # santander current account
-san_current = pd.read_html(Path('../data/san/current/oct.html'), skiprows=SKIPROWS)[0] 
+san_current = pd.read_html(Path('../data/san/current/oct.html'), header = 3)[0] 
 # santander savings account
-san_savings = pd.read_html(Path('../data/san/saver/oct.html'), skiprows=SKIPROWS)[0] 
+san_savings = pd.read_html(Path('../data/san/saver/oct.html'))[0] 
 
 san_columns=["Debit/Credit", "Date"]
 
