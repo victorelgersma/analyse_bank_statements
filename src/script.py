@@ -1,6 +1,3 @@
-"""
-Note: this does not take into account the money moved into my vanguard account
-"""
 from datetime import datetime
 import chardet
 from pathlib import Path
