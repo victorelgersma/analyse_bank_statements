@@ -2,11 +2,9 @@
 Note: this does not take into account the money moved into my vanguard account
 """
 from datetime import datetime
-
 import chardet
 from pathlib import Path
 import pandas as pd
-
 
 date = datetime(2024, 10, 1)
 month_abbr =date.strftime('%b').lower() # 'oct'
@@ -16,9 +14,9 @@ EUR_TO_GBP = 0.8
 USD_TO_GBP = 0.6
 
 COLUMNS=["Amount", "Description", "Date", "Currency"]
+san_paths = [f'../data/san/current/{month_abbr}.html', f'../data/san/saver/{month_abbr}.html']
+rev_paths = [f'../data/rev/eur/{month_abbr}.csv', f'../data/rev/gbp/{month_abbr}.csv', f'../data/rev/usd/{month_abbr}.csv']
 
-san_paths=['../data/san/current/oct.html', '../data/san/saver/oct.html' ]
-rev_paths = ['../data/rev/eur/oct.csv', '../data/rev/gbp/oct.csv', '../data/rev/usd/oct.csv']
 
 def hor_rule():
     print("-" * 56)
