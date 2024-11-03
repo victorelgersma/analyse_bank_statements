@@ -1,4 +1,5 @@
 
+import chardet
 from pathlib import Path
 import pandas as pd
 
@@ -44,8 +45,16 @@ print("\n--------------------------------------------------------\n")
 print(f"{RED} SANTANDER - TRANSACTIONS {RESET}")
 print("\n--------------------------------------------------------\n")
 
+# detect encoding
+
+san_current_file_path='../data/san/current/oct.html' 
+
 def parse_san(path):
-    df = pd.read_html(Path(path), header =3)[0]
+    with open(path, 'rb') as f:
+        result = chardet.detect(f.read())
+        encoding = result['encoding']
+        print(f"Detected encoding: {encoding}")
+    df = pd.read_html(Path(path), encoding=encoding, header =3)[0]
     cols = ["Date", "Description", "Money in", "Money Out"]
     return df[cols]
 # santander current account
