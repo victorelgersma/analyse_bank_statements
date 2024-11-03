@@ -47,11 +47,15 @@ print("\n--------------------------------------------------------\n")
 
 san_current_file_path='../data/san/current/oct.html' 
 
-def parse_san(path):
+def get_encoding(path):
     with open(path, 'rb') as f:
         result = chardet.detect(f.read())
         encoding = result['encoding']
         print(f"Detected encoding: {encoding}")
+    return encoding
+
+def parse_san(path):
+    encoding = get_encoding(path)
     df = pd.read_html(Path(path), encoding=encoding, header =3)[0]
     cols = ["Date", "Description", "Money in", "Money Out"]
     return df[cols]
