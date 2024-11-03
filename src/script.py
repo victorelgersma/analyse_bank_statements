@@ -18,31 +18,22 @@ print("\n--------------------------------------------------------\n")
 def parse_rev(path):
     return pd.read_csv(path)
 
+paths = ['../data/rev/eur/oct.csv', '../data/rev/gbp/oct.csv', '../data/rev/usd/oct.csv']
 # euro account
-rev_euro_df = parse_rev('../data/rev/eur/oct.csv')
-# pound account
-rev_gbp_df = parse_rev('../data/rev/gbp/oct.csv')
 
-# dollar account
-rev_usd_df = parse_rev('../data/rev/usd/oct.csv')
+rev_columns=["Amount", "Description", "Completed Date", "Currency"]
 
+def analyze(path, columns):
+    df = parse_rev(path)
+    print(df.dtypes)
+    print(df[rev_columns])
+    print("sum", df["Amount"].sum())
+
+for path in paths:
+    analyze(path, rev_columns)
 
 # columns
-rev_columns=["Amount", "Description", "Completed Date"]
 
-
-print("\nEuro Account\n")
-print(rev_euro_df.dtypes)
-print(rev_euro_df[rev_columns]) 
-print("sum", rev_euro_df["Amount"].sum())
-
-print("\nGBP Account\n")
-print(rev_gbp_df[rev_columns]) 
-print("sum", rev_gbp_df["Amount"].sum())
-print("\nUSD Account\n")
-print(rev_usd_df[rev_columns]) 
-
-print("sum", rev_usd_df["Amount"].sum())
 
 print("\n--------------------------------------------------------\n")
 print(f"{RED} SANTANDER - TRANSACTIONS {RESET}")
