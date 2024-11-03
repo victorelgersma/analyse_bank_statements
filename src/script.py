@@ -8,36 +8,33 @@ import pandas as pd
 
 MONTH = 'oct'
 
-# ANSI escape codes for colors
-RED = "\033[31m"
-BLUE = "\033[34m"
-RESET = "\033[0m"
-
 EUR_TO_GBP = 0.8
 USD_TO_GBP = 0.6
 
-# Relevant columns
-
-vanguard_transaction = pd.DataFrame({
-    'Date': ['2024-11-03'],  
-    'Description': ['Added to Vanguard account'],
-    'Amount': [250],
-    'Currency': ['GBP'],
-    'Account': ['Vanguard']
-})
+account_summary_list = []
 
 san_paths=['../data/san/current/oct.html', '../data/san/saver/oct.html' ]
 rev_paths = ['../data/rev/eur/oct.csv', '../data/rev/gbp/oct.csv', '../data/rev/usd/oct.csv']
 
 def hor_rule():
-    print("\n" + "-" * 56)
+    print("-" * 56)
 
 def detect_currency(df):
     """Detects the currency of transactions in a DataFrame based on the 'Currency' column.
+       If no currencies are present, it returns 'GBP'.
        If multiple currencies are present, it returns 'Mixed Currencies'."""
-    currencies = df['Currency'].unique()
+    # Get unique currencies in the column
+    currencies = df['Currency'].dropna().unique()
+    
+    # Check for no currencies
+    if len(currencies) == 0:
+        return "GBP"
+    
+    # Check for a single unique currency
     if len(currencies) == 1:
         return currencies[0]
+    
+    # Return mixed if multiple currencies are present
     return "Mixed Currencies"
 
 def title(account_name, color):
@@ -45,23 +42,12 @@ def title(account_name, color):
     print(f"{color} {account_name.upper()}  - TRANSACTIONS {RESET}")
     hor_rule()
 
-def pretty_print_profit(profit, currency):
+def display_profit(profit, currency):
     hor_rule()
-    print(f"profit: \t  {profit}  {currency}")
+    print(f"profit: \t\t\t  {profit}  {currency}")
+    print("\n")
+    print("\n")
 
-def analyze_rev(path):
-    REV_COLUMNS=["Amount", "Description", "Completed Date", "Currency"]
-    df = pd.read_csv(path)
-    print('\n')
-    print("data types:")
-    hor_rule()
-    print(df.dtypes)
-    print('\n')
-    print("transactions:")
-    hor_rule()
-    print(df[REV_COLUMNS], "\n")
-    pretty_print_profit(f"{round(df['Amount'].sum(), 2)}", detect_currency(df))
-    
 
 def get_encoding(path):
     with open(path, 'rb') as f:
@@ -91,27 +77,37 @@ def clean_san(df):
     df["Amount"] = - df["Money Out"] + df["Money in"]
     return df
 
-def analyze_san(path):
-    SAN_COLUMNS=["Date", "Description", "Amount"]
-    df = get_df_san(path)
-    df = clean_san(df)
-    print(df.dtypes)
-    print(df[SAN_COLUMNS])
-    pretty_print_profit(str(round(df["Amount"].sum(),2)), "GBP")
+SAN_COLUMNS=["Date", "Description", "Amount"]
 
-title("Revolut", BLUE)
+def display_transactions(df, cols):
+    print(df[cols])
+    profit = round(df["Amount"].sum(),2)
+    display_profit(str(profit), "GBP")
 
 for index, path in enumerate(rev_paths):
-    print(f"\n \t\tStatement {index+1}\n")
-    analyze_rev(path)
+    REV_COLUMNS=["Amount", "Description", "Completed Date", "Currency"]
+    df = pd.read_csv(path)
+    print(f"Revolut Statement {index+1}\n")
+    display_transactions(df, REV_COLUMNS)
 
-title("Santander", RED)
+print("Santander")
 
-for statement in san_paths:
+for path in san_paths:
+    df = get_df_san(path)
+    df = clean_san(df)
     print('\n')
-    analyze_san(statement)
+    display_transactions(df, SAN_COLUMNS)
 
+import pandas as pd
 
+# Create a DataFrame for a single transaction to Vanguard
+vanguard_transaction = pd.DataFrame({
+    'Description': ['Added to Vanguard account'],
+    'Amount': [250],
+    'Currency': ['GBP'],  # Specify GBP since it's in GBP
+    'Account': ['Vanguard']
+})
 
+display_transactions(vanguard_transaction, ["Description", "Amount", "Currency", "Account"])
 
 
