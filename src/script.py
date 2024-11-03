@@ -13,13 +13,17 @@ print("\n--------------------------------------------------------\n")
 print(f"{BLUE} REVOLUT {RESET}")
 print("\n--------------------------------------------------------\n")
 
+def parse_rev(path):
+    return pd.read_csv(path)
+
 # euro account
-rev_euro_df = pd.read_csv('../data/rev/eur/oct.csv')
+rev_euro_df = parse_rev('../data/rev/eur/oct.csv')
 # pound account
-rev_gbp_df = pd.read_csv('../data/rev/gbp/oct.csv')
+rev_gbp_df = parse_rev('../data/rev/gbp/oct.csv')
 
 # dollar account
-rev_usd_df = pd.read_csv('../data/rev/usd/oct.csv')
+rev_usd_df = parse_rev('../data/rev/usd/oct.csv')
+
 
 # columns
 rev_columns=["Amount", "Description", "Completed Date"]
@@ -36,11 +40,13 @@ print("\n--------------------------------------------------------\n")
 print(f"{RED} santander {RESET}")
 print("\n--------------------------------------------------------\n")
 
-# santander current account
-san_current = pd.read_html(Path('../data/san/current/oct.html'))[0] 
+SKIPROWS=3
 
+# santander current account
+san_current = pd.read_html(Path('../data/san/current/oct.html'), skiprows=SKIPROWS)[0] 
 # santander savings account
-san_savings = pd.read_html(Path('../data/san/saver/oct.html'))[0] 
+san_savings = pd.read_html(Path('../data/san/saver/oct.html'), skiprows=SKIPROWS)[0] 
+
 san_columns=["Debit/Credit", "Date"]
 
 print("\nTransactions - Current Account\n")
