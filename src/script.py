@@ -1,6 +1,10 @@
 
 from pathlib import Path
 import pandas as pd
+
+
+MONTH = 'oct'
+
 # ANSI escape codes for colors
 RED = "\033[31m"
 GREEN = "\033[32m"
@@ -10,7 +14,7 @@ RESET = "\033[0m"
 
 
 print("\n--------------------------------------------------------\n")
-print(f"{BLUE} REVOLUT {RESET}")
+print(f"{BLUE} REVOLUT  - TRANSACTIONS {RESET}")
 print("\n--------------------------------------------------------\n")
 
 def parse_rev(path):
@@ -37,11 +41,13 @@ print("\nUSD:\n")
 print(rev_usd_df[rev_columns]) 
 
 print("\n--------------------------------------------------------\n")
-print(f"{RED} santander {RESET}")
+print(f"{RED} SANTANDER - TRANSACTIONS {RESET}")
 print("\n--------------------------------------------------------\n")
 
 def parse_san(path):
-    return pd.read_html(Path(path), header =3)[0]
+    df = pd.read_html(Path(path), header =3)[0]
+    cols = ["Date", "Description", "Money in", "Money Out"]
+    return df[cols]
 # santander current account
 san_current = parse_san('../data/san/current/oct.html')
 # santander savings account
