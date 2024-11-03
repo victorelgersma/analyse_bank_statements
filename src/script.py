@@ -7,9 +7,8 @@ date = datetime(2024, 10, 1)
 month_abbr =date.strftime('%b').lower() # 'oct'
 print(month_abbr)
 
-EUR_TO_GBP = 0.8
-USD_TO_GBP = 0.6
-
+EUR_TO_GBP = 0.84
+USD_TO_GBP = 0.77
 COLUMNS=["Amount", "Description", "Date", "Currency"]
 san_paths = [f'../data/san/current/{month_abbr}.html', f'../data/san/saver/{month_abbr}.html']
 rev_paths = [f'../data/rev/eur/{month_abbr}.csv', f'../data/rev/gbp/{month_abbr}.csv', f'../data/rev/usd/{month_abbr}.csv']
