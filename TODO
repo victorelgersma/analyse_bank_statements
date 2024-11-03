@@ -8,6 +8,6 @@
 - [ ] add vanguard statement
 - [ ] figure out how to set a schema to validate the santander and revolut bank statements
 - [ ] convert currency to a number
-- [  ] convert NaNs to 0s
+- [ ] convert NaNs to 0s - or slice it out
 
 
