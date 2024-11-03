@@ -28,7 +28,7 @@ def analyze_rev(path):
     df = pd.read_csv(path)
     print(df.dtypes)
     print(df[REV_COLUMNS])
-    print("sum", df["Amount"].sum())
+    print("profit", round(df["Amount"].sum(), 2))
 
 
 def get_encoding(path):
