@@ -1,3 +1,7 @@
+"""
+Note: this does not take into account the money moved into my vanguard account
+"""
+
 import chardet
 from pathlib import Path
 import pandas as pd
@@ -14,22 +18,50 @@ USD_TO_GBP = 0.6
 
 # Relevant columns
 
+vanguard_transaction = pd.DataFrame({
+    'Date': ['2024-11-03'],  
+    'Description': ['Added to Vanguard account'],
+    'Amount': [250],
+    'Currency': ['GBP'],
+    'Account': ['Vanguard']
+})
+
 san_paths=['../data/san/current/oct.html', '../data/san/saver/oct.html' ]
 rev_paths = ['../data/rev/eur/oct.csv', '../data/rev/gbp/oct.csv', '../data/rev/usd/oct.csv']
 
-def title(account_name, color):
+def hor_rule():
     print("\n" + "-" * 56)
-    print(f"{color} {account_name.upper()}  - TRANSACTIONS {RESET}")
-    print("\n" + "-" * 56 +"\n")
 
+def detect_currency(df):
+    """Detects the currency of transactions in a DataFrame based on the 'Currency' column.
+       If multiple currencies are present, it returns 'Mixed Currencies'."""
+    currencies = df['Currency'].unique()
+    if len(currencies) == 1:
+        return currencies[0]
+    return "Mixed Currencies"
+
+def title(account_name, color):
+    hor_rule()
+    print(f"{color} {account_name.upper()}  - TRANSACTIONS {RESET}")
+    hor_rule()
+
+def pretty_print_profit(profit, currency):
+    hor_rule()
+    print(f"profit: \t  {profit}  {currency}")
 
 def analyze_rev(path):
     REV_COLUMNS=["Amount", "Description", "Completed Date", "Currency"]
     df = pd.read_csv(path)
+    print('\n')
+    print("data types:")
+    hor_rule()
     print(df.dtypes)
-    print(df[REV_COLUMNS])
-    print("profit", round(df["Amount"].sum(), 2))
-
+    print('\n')
+    print("transactions:")
+    hor_rule()
+    print(df[REV_COLUMNS], "\n")
+    pretty_print_profit(f"{round(df['Amount'].sum(), 2)}", detect_currency(df))
+    
 
 def get_encoding(path):
     with open(path, 'rb') as f:
@@ -54,26 +86,23 @@ def get_df_san(path):
     df = pd.read_html(Path(path), encoding=encoding, header =3)[0]
     return df[SAN_COLUMNS]
 
-def clean_san_df(df):
+def clean_san(df):
     df = clean_currency_columns(df)
     df["Amount"] = - df["Money Out"] + df["Money in"]
     return df
 
 def analyze_san(path):
     SAN_COLUMNS=["Date", "Description", "Amount"]
-    # clean
     df = get_df_san(path)
-    df = clean_san_df(df)
+    df = clean_san(df)
     print(df.dtypes)
     print(df[SAN_COLUMNS])
-    print("total money out", df["Money Out"].sum())
-    print("total money in", df["Money in"].sum())
-    print("sum", - df["Money Out"].sum() + df["Money in"].sum())
+    pretty_print_profit(str(round(df["Amount"].sum(),2)), "GBP")
 
 title("Revolut", BLUE)
 
-for path in rev_paths:
-    print('\n')
+for index, path in enumerate(rev_paths):
+    print(f"\n \t\tStatement {index+1}\n")
     analyze_rev(path)
 
 title("Santander", RED)
