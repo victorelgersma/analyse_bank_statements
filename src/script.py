@@ -129,15 +129,22 @@ for index, path in enumerate(san_paths):
     print(df)
     name = f"Santander Statement {index +1}"
     process(dfs, df, name)
-
 account_summary_list.append(["Vanguard", 250, "GBP"])
 
 df = pd.DataFrame(account_summary_list, columns=["Account", "Profit", "Currency"])
 
 
-print("Combined DF (all expenses)")
 
-print(get_combined_df(dfs))
+# TODO - reset indexes for these
+# TODO - add column for account name to keep track of this
+# Do all subsequent analysis on the combined data frame
+print("Combined DF (all transactions)")
+combined_df = get_combined_df(dfs)
+
+# fix times to be same format
+combined_df['Date'] = pd.to_datetime(combined_df['Date'], errors='coerce', dayfirst=True)
+
+print(combined_df)
 
 def add_gbp_column(df):
     """
