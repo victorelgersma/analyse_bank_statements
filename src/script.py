@@ -10,6 +10,7 @@ pd.set_option('display.max_rows', None)
 EUR_TO_GBP = 0.84
 USD_TO_GBP = 0.77
 
+# Columns of cleaned df:
 COLUMNS=["Amount", "Description", "Date", "Currency"]
 
 san_paths = [f'../data/san/current/{month_abbr}.html', f'../data/san/saver/{month_abbr}.html']
@@ -84,36 +85,59 @@ def clean_rev(df):
     return df
 
 
-def process(df, name):
+def process(dfs, df, name):
     " Once the data frame is in the right format, this is the handler function"
     profit = get_profit(df)
     currency = get_currency(df)
     account_summary_list.append([name, profit, currency])
     print(name)
     hor_rule()
-    print(df[COLUMNS])
+    df = df[COLUMNS]
+    print(df)
+    dfs.append(df)
     display_profit(str(profit), currency)
 
+def get_combined_df(dfs, axis=0):
+    """
+    Combines a list of DataFrames along the specified axis.
+    
+    Parameters:
+    dfs (list of pd.DataFrame): The DataFrames to combine.
+    axis (int): The axis to concatenate along (0 for rows, 1 for columns).
+    
+    Returns:
+    pd.DataFrame: The combined DataFrame.
+    """
+    return pd.concat(dfs, axis=axis)
+
 account_summary_list = []
+dfs = []
 print('\n')
 for index, path in enumerate(rev_paths):
     df = pd.read_csv(path)
     df = clean_rev(df)
+    print(df)
     name = f"Revolut Statement {index +1}"
-    process(df, name)
+    process(dfs, df, name)
 
 
 print("Santander")
 
+
 for index, path in enumerate(san_paths):
     df = clean_san(get_df_san(path))
-    print('\n')
+    print(df)
     name = f"Santander Statement {index +1}"
-    process(df, name)
+    process(dfs, df, name)
 
 account_summary_list.append(["Vanguard", 250, "GBP"])
 
 df = pd.DataFrame(account_summary_list, columns=["Account", "Profit", "Currency"])
+
+
+print("Combined DF (all expenses)")
+
+print(get_combined_df(dfs))
 
 def add_gbp_column(df):
     """

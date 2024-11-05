@@ -1,8 +1,9 @@
 
 ## To do
 
+- [ ] add a way to calculate all with a particular thing in the name
 - [ ] make the column names identical (in the cleanup functions)
-- [  ] have npm get balance month-number give me the balance for that month
+- [ ] have npm get balance month-number give me the balance for that month
 - [ ] calculate sums
 - [ ] start santander data frames later - make sure NaNs after the heading are taken care of
 - [ ] add linter
