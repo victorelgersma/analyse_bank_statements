@@ -3,3 +3,5 @@ data/
 venv
 transactions
 node_modules
+
+src/.*

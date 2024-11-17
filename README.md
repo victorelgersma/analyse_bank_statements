@@ -9,7 +9,11 @@ run script:
 
 cd src && py script.py
 
+run jupyter lab:
 
+```
+jupyter lab
+```
 
 ## Santander
 

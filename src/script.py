@@ -1,3 +1,6 @@
+
+# LEGACY
+
 from datetime import datetime
 import chardet
 from pathlib import Path
