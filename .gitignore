@@ -1,7 +1,10 @@
 
-data/
+# place bank statements here:
+data/ 
+# python virtual env
 venv
-transactions
+
 node_modules
 
+# hidden files like ipynb checkpoints
 src/.*

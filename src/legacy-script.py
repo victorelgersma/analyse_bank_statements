@@ -1,5 +1,6 @@
 
-# LEGACY
+# LEGACY - I will keep this around because there were some good ideas in here
+# the use of ipynb pretty much makes this pointless
 
 from datetime import datetime
 import chardet
