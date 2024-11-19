@@ -1,6 +1,8 @@
 
 ## To do
 
+- [ ] create an anaysis script that takes in a dataframe with a particular schema (i.e that first checks that it's the right schema)
+- [ ] create jupyter lab scripts for everything
 - [ ] add a way to calculate all with a particular thing in the name
 - [ ] make the column names identical (in the cleanup functions)
 - [ ] have npm get balance month-number give me the balance for that month
