@@ -20,16 +20,7 @@ jupyter lab
 
 ## Santander
 
-- download the .xls file from the website.
-
-### A note on Santander midata exports. 
-Callout: midata files are not utf-8, and they only allow you to download a 12 month interval ending last month. Most likely this is not what you need
-
-Interestingly the midata file 
-```zsh
-file oct.html 
-oct.html: HTML document, ISO-8859 text, with very long lines (1540)
-```
+- download the .xls file from the website. Bizarrely, this is actually an HTML file, so it needs to be parsed accordingly (see santander.ipynb)
 
 it is good to specify the charset
 
