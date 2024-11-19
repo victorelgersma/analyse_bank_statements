@@ -1,5 +1,8 @@
 # Readme
 
+Jupyter notebooks for analysing bank statements from Revolut and Santander. 
+
+
 ## Running the script
 
 activate virtual env:
